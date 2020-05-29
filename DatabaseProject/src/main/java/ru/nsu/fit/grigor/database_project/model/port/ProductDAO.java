@@ -4,5 +4,5 @@ import javafx.util.Pair;
 
 public interface ProductDAO {
 
-  void get
+
 }
