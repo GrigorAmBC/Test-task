@@ -64,7 +64,7 @@ public class SearchOperation implements Operation {
 
     try {
       Statement stmt = con.createStatement();
-criteria.getCriteriaResult();
+      criteria.getCriteriaResult();
       ResultSet rs = stmt.executeQuery("SELECT * FROM JC_CONTACT");
       while (rs.next()) {
         String str = rs.getString("contact_id")+":" +rs.getString(2);

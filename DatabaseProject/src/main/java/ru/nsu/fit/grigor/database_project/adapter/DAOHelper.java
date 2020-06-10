@@ -71,6 +71,8 @@ public class DAOHelper implements CustomerDAO, PurchaseDAO, ProductDAO {
 
   @Override
   public List<Customer> getUniqueCustomers() {
+    String query = "";
+
    /* String query = "SELECT DISTINCT column id FROM Customer;";
     try {
       Statement statement = connection.createStatement();
