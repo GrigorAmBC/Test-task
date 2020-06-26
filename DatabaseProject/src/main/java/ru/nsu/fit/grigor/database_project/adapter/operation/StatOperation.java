@@ -1,59 +1,77 @@
 package ru.nsu.fit.grigor.database_project.adapter.operation;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import ru.nsu.fit.grigor.database_project.adapter.operation.utility.dao.StatsDaoHelper;
+import ru.nsu.fit.grigor.database_project.adapter.operation.utility.json.StatJsonHelper;
+import ru.nsu.fit.grigor.database_project.model.port.IOHelper;
 import ru.nsu.fit.grigor.database_project.model.port.Operation;
+import ru.nsu.fit.grigor.database_project.model.port.dao.StatsDao;
 
 import java.io.Reader;
-import java.io.Writer;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 public class StatOperation implements Operation {
+  private String startDate;
+  private String endDate;
+  private final StatJsonHelper jsonHelper = new StatJsonHelper();
+  private final StatsDao daoHelper;
 
-  private Date startDate;
-  private Date endDate;
-
-  @Override
-  public void makeOperation(Writer writer) {
-    //todo
-  }
-
-  @Override
-  public void setParameters(Reader reader) {
-    Gson gson = new Gson();//todo
-    Map<String, String> criteriaMap = gson.fromJson(reader, new TypeToken<Map<String, String>>(){}.getType());
-    String err;
-    if (criteriaMap.containsKey("startDate")) {
-      String pattern = "yyyy-MM-dd";
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-      try {
-        startDate = simpleDateFormat.parse(criteriaMap.get("startDate"));
-      } catch (ParseException e) {
-        // todo: write error to file
-        //err += "No startDate";
-      }
-    } else {
-      //todo: write err to file
-    }
-
-    if (criteriaMap.containsKey("endDate")) {
-      String pattern = "yyyy-MM-dd";
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-      try {
-        endDate = simpleDateFormat.parse(criteriaMap.get("startDate"));
-      } catch (ParseException e) {
-        // todo: write error to file
-        //err += "No endDate";
-      }
-    } else {
-      //todo: write err to file
+  public StatOperation() throws SQLException{
+    try {
+      daoHelper = new StatsDaoHelper();
+    } catch (SQLException | ClassNotFoundException throwables) {
+      throw new SQLException("could not connect to server");
     }
   }
 
+  @Override
+  public void makeOperation(IOHelper ioHelper) {
+    try {
+      String result = daoHelper.getCustomerStatsInJson(startDate, endDate);
+      result = jsonHelper.getNiceJson(result);
+      ioHelper.writeToOut(result);
+    } catch (SQLException throwables) {
+      ioHelper.writeToOut(jsonHelper.getJsonError(throwables.getMessage()));
+    }
+  }
+
+  @Override
+  public void setParameters(Reader reader) throws IllegalArgumentException {
+    String error = "";
+    Map<String, String> inputParams = jsonHelper.getInputParams(reader);
+
+    if (inputParams.containsKey("startDate")) {
+      startDate = inputParams.get("startDate");
+      checkDate(startDate);
+    } else {
+      error += "missing startDate argument; ";
+    }
+
+    if (inputParams.containsKey("endDate")) {
+      endDate = inputParams.get("endDate");
+      checkDate(endDate);
+    } else {
+      error += "missing endDate argument;";
+    }
+
+    if (!error.isEmpty()) {
+      throw new IllegalArgumentException(error);
+    }
+  }
+
+  private void checkDate(String date) {
+    String pattern = "yyyy-MM-dd";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    simpleDateFormat.setLenient(false);
+    try {
+      String parseDate = simpleDateFormat.format(simpleDateFormat.parse(date));
+      if (!parseDate.equals(date)) {
+        throw new IllegalArgumentException("wrong date format");
+      }
+    } catch (ParseException e) {
+      throw new IllegalArgumentException("wrong date format");
+    }
+  }
 }
