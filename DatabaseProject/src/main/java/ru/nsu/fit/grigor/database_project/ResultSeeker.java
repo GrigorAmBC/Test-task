@@ -1,51 +1,52 @@
 package ru.nsu.fit.grigor.database_project;
 
-import ru.nsu.fit.grigor.database_project.adapter.JsonHelper;
 import ru.nsu.fit.grigor.database_project.adapter.operation.OperationFactory;
+import ru.nsu.fit.grigor.database_project.adapter.operation.utility.json.JsonHelper;
 import ru.nsu.fit.grigor.database_project.model.port.IOHelper;
 import ru.nsu.fit.grigor.database_project.model.port.Operation;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.SQLException;
 
 public class ResultSeeker {
-  private String inputFileName;
-  private String outputFileName;
-  private Operation.OperationType operationType;
-  private IOHelper ioHelper;
+  private final IOHelper ioHelper;
+  private final JsonHelper jsonHelper = new JsonHelper();
 
-  // todo: move those two to a single class
-  private JsonHelper jsonHelper;
-
-  public ResultSeeker(String inputFileName, String outputFileName, String operationType, IOHelper ioHelper) {
-    jsonHelper = new JsonHelper();
+  public ResultSeeker(String operationType, IOHelper ioHelper) {
     this.ioHelper = ioHelper;
-    this.inputFileName = inputFileName;
-    this.outputFileName = outputFileName;
+    Operation.OperationType type;
     try {
-      this.operationType = Operation.OperationType.valueOf(operationType);
+      type = Operation.OperationType.valueOf(operationType);
+      executeOperation(type);
     } catch (IllegalArgumentException e) {
-      // todo: write the result TO JSON
+      ioHelper.writeToOut(jsonHelper
+              .getJsonError("no such operation: \""+ operationType + "\""));
     }
   }
 
-  public void executeOperation() {//todo: rename
-    // create the operation
-    OperationFactory factory = new OperationFactory();
-    Operation operation = factory.createOperation(operationType);
+  public void executeOperation(Operation.OperationType operationType) {
+    Operation operation;
 
-    // make operation
-    try (Reader reader = new InputStreamReader(new FileInputStream(inputFileName))) {
-      operation.setParameters(reader);
-    } catch (IOException e) {
-      //todo:
-      ioHelper.writeErrorToOut("");
-      e.printStackTrace();
+    try {
+      operation = OperationFactory.createOperation(operationType);
+    } catch (SQLException throwables) {
+      ioHelper.writeToOut(jsonHelper.getJsonError(throwables.getMessage()));
+      return;
     }
 
-    try(Writer writer = new OutputStreamWriter(new FileOutputStream(outputFileName))) {
-      operation.makeOperation(writer);
+    boolean readOk = false;
+    try (Reader reader = ioHelper.getInputReader()) {
+      operation.setParameters(reader);
+      readOk = true;
     } catch (IOException e) {
-      //todo:
+      ioHelper.writeToOut(jsonHelper.getJsonError("could not open input file"));
+    } catch (IllegalArgumentException e) {
+      ioHelper.writeToOut(jsonHelper.getJsonError(e.getMessage()));
+    }
+
+    if (readOk) {
+      operation.makeOperation(ioHelper);
     }
   }
 

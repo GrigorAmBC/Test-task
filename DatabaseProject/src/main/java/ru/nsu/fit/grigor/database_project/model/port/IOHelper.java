@@ -1,9 +1,9 @@
 package ru.nsu.fit.grigor.database_project.model.port;
 
-import com.google.gson.JsonObject;
+import java.io.FileNotFoundException;
+import java.io.Reader;
 
 public interface IOHelper {
-  void writeResultToOut();//todo:change params
-  void readFromIn();
-  void writeErrorToOut(String message);
+  Reader getInputReader() throws FileNotFoundException;
+  void writeToOut(String content);
 }

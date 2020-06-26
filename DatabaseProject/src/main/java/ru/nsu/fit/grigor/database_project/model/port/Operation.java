@@ -1,15 +1,12 @@
 package ru.nsu.fit.grigor.database_project.model.port;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.*;
+import java.io.Reader;
 
 public interface Operation {
   enum OperationType {
     search, stat
   }
   
-
-  void makeOperation(Writer writer);
-  void setParameters(Reader reader);
+  void makeOperation(IOHelper ioHelper);
+  void setParameters(Reader reader) throws IllegalArgumentException;
 }
