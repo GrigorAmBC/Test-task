@@ -1,9 +1,8 @@
 package ru.nsu.fit.grigor.database_project.model.port;
 
-import ru.nsu.fit.grigor.database_project.adapter.DAOHelper;
-import ru.nsu.fit.grigor.database_project.adapter.JsonHelper;
-import ru.nsu.fit.grigor.database_project.adapter.JsonResult;
+import ru.nsu.fit.grigor.database_project.adapter.operation.utility.json.SearchJsonHelper;
+import ru.nsu.fit.grigor.database_project.model.port.dao.SearchDao;
 
-public interface Criteria {//todo: maybe add 'getCriteriaMap()?'
-  JsonResult getCriteriaResult(DAOHelper daoHelper, JsonHelper jsonHelper);
+public interface Criteria {
+  void putCriteriaResult(SearchDao daoHelper, SearchJsonHelper searchJsonHelper);
 }
