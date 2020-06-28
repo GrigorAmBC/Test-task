@@ -22,4 +22,4 @@ Build and execution instructions:
 	6. Click Ok.
 
 TESTING PROJECT
-	For testing purposes the 'test_input' directory was created. There are 'input.json' files in it. To test this application, you can further add configurations to this project. For example, you can change your 'Working directory' to '~/DatabaseProject/test_input/search/' and then change 'Programm arguments' to 'search input1.json output1.json'.
+For testing purposes the 'test_input' directory was created. There are 'input.json' files in it. To test this application, you can further add configurations to this project. For example, you can change your 'Working directory' to '~/DatabaseProject/test_input/search/' and then change 'Programm arguments' to 'search input1.json output1.json'.
