@@ -18,12 +18,8 @@ public class SearchOperation implements Operation {
   private final SearchDao daoHelper;
   private final List<Criteria> criteriaList = new ArrayList<>();
 
-  public SearchOperation() throws SQLException{
-    try {
-      daoHelper = new SearchDaoHelper();
-    } catch (SQLException | ClassNotFoundException throwables) {
-      throw new SQLException("could not connect to server");
-    }
+  public SearchOperation() throws SQLException {
+    daoHelper = new SearchDaoHelper();
   }
 
   @Override

@@ -18,12 +18,8 @@ public class StatOperation implements Operation {
   private final StatJsonHelper jsonHelper = new StatJsonHelper();
   private final StatsDao daoHelper;
 
-  public StatOperation() throws SQLException{
-    try {
-      daoHelper = new StatsDaoHelper();
-    } catch (SQLException | ClassNotFoundException throwables) {
-      throw new SQLException("could not connect to server");
-    }
+  public StatOperation() throws SQLException {
+    daoHelper = new StatsDaoHelper();
   }
 
   @Override
@@ -53,7 +49,7 @@ public class StatOperation implements Operation {
       endDate = inputParams.get("endDate");
       checkDate(endDate);
     } else {
-      error += "missing endDate argument;";
+      error += "missing endDate argument";
     }
 
     if (!error.isEmpty()) {
