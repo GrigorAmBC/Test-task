@@ -71,9 +71,7 @@ public class SearchJsonHelper extends JsonHelper {
         criteria = (Criteria) gson.fromJson(jo, className);
       } catch (IllegalArgumentException e) {
         throw new IllegalArgumentException("one of criterias is wrong");
-      } /*catch (JsonSyntaxException e) {todo
-        throw new IllegalArgumentException("wrong criteria json syntax");
-      }*/
+      }
 
       criteriaList.add(criteria);
     }
