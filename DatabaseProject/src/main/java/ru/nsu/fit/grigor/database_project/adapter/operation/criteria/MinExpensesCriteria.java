@@ -34,6 +34,6 @@ public class MinExpensesCriteria implements Criteria {
   }
 
   private boolean checkParameters() {
-    return minExpenses < 0 || maxExpenses < 0;
+    return minExpenses < 0 || maxExpenses < 0 || minExpenses > maxExpenses;
   }
 }
