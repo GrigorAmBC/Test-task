@@ -16,7 +16,7 @@ BUILDING PROJECT<br/>
 Build and execution instructions:<br/>
 	1. Download the Test-task repository.<br/>
 	2. Use Intellij Idea to open the DatabaseProject project.<br/>
-	3. In Intellij Idea, click 'Add configuration' button.<br/>
+  3. In Intellij Idea, click 'Add configuration' button.<br/>
 	4. Click the '+' button and pick 'Application'.<br/>
 	5. In the 'Main class' field insert this 'ru.nsu.fit.grigor.database_project.Main'.<br/>
 	6. Click Ok.<br/>
