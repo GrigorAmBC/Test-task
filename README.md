@@ -6,11 +6,11 @@ Connection with the postgres server is set for default postgres user:
 	password = "postgres".
 The server has to be hosted on localhost and on port 5432 (default postgres configuration).
 
-DATABASE SETUP
-Steps to follow in order to get your local postgresql server ready:
-  1. Download the 'db.sql' dump file of the 'shop' database.
-  2. Execute this command to create the 'shop' database and fill it with data:
-	  sudo -u postgres psql -f db.sql
+DATABASE SETUP<br/>
+Steps to follow in order to get your local postgresql server ready:<br/>
+  1. Download the 'db.sql' dump file of the 'shop' database.<br/>
+  2. Execute this command to create the 'shop' database and fill it with data:<br/>
+	  sudo -u postgres psql -f db.sql<br/>
 
 BUILDING PROJECT
 Build and execution instructions:
