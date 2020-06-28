@@ -1,0 +1,6 @@
+{
+  "criterias": [
+    {"nonExistingCriteria": "Смирнов"},
+    {"badCustomers": 4}
+  ]
+}
