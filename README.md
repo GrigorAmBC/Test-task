@@ -2,7 +2,7 @@ This is a test task for getting an internship.
 
 Postgresql must be installed on your computer. There must be no database named 'shop'.<br/>
 Connection with the postgres server is set for default postgres user:<br/>
-  login = "postgres"<br/>
+  <br/>login = "postgres"<br/>
   password = "postgres".<br/>
 The server has to be hosted on localhost and on port 5432 (default postgres configuration).<br/>
 
