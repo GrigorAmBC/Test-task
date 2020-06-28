@@ -4,4 +4,5 @@ import java.sql.SQLException;
 
 public interface StatsDao {
   String getCustomerStatsInJson(String leftDate, String rightDate) throws SQLException;
+  void closeConnection();
 }

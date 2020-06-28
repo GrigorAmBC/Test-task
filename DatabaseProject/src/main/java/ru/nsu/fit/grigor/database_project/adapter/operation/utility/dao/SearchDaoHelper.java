@@ -98,4 +98,13 @@ public class SearchDaoHelper implements SearchDao {
     rs.next();
     return rs.getString(1);
   }
+
+  @Override
+  public void closeConnection() {
+    try {
+      connection.close();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
 }

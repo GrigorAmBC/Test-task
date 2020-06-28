@@ -31,6 +31,7 @@ public class StatOperation implements Operation {
     } catch (SQLException throwables) {
       ioHelper.writeToOut(jsonHelper.getJsonError(throwables.getMessage()));
     }
+    daoHelper.closeConnection();
   }
 
   @Override

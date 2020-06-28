@@ -28,6 +28,7 @@ public class SearchOperation implements Operation {
       criteria.putCriteriaResult(daoHelper, jsonHelper);
     }
     ioHelper.writeToOut(jsonHelper.getJsonResult());
+    daoHelper.closeConnection();
   }
 
   @Override

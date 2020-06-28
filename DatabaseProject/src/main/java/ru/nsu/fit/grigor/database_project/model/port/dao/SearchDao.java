@@ -7,4 +7,5 @@ public interface SearchDao {
   String getCustomersByPurchaseInJson(String productName, int minTimes) throws SQLException;
   String getCustomersByPurchaseVolumeInJson(double minPurchaseVolume, double maxPurchaseVolume) throws SQLException;
   String getPassiveCustomersInJson(int count) throws SQLException;
+  void closeConnection();
 }

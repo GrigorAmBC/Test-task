@@ -68,4 +68,13 @@ public class StatsDaoHelper implements StatsDao {
     rs.next();
     return rs.getString(1);
   }
+
+  @Override
+  public void closeConnection() {
+    try {
+      connection.close();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
 }
