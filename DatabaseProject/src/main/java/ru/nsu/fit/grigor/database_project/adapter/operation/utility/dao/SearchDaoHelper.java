@@ -2,25 +2,28 @@ package ru.nsu.fit.grigor.database_project.adapter.operation.utility.dao;
 
 import ru.nsu.fit.grigor.database_project.model.port.dao.SearchDao;
 
-import java.io.Closeable;
 import java.sql.*;
 
-public class SearchDaoHelper implements SearchDao, Closeable {
+public class SearchDaoHelper implements SearchDao {
   private Connection connection;
   private Statement curStatement;
 
-  public SearchDaoHelper() throws SQLException, ClassNotFoundException {
+  public SearchDaoHelper() throws SQLException {
     setConnection();
     setStatement();
   }
 
 
-  private void setConnection() throws ClassNotFoundException, SQLException {
-    Class.forName("org.postgresql.Driver");
-    String url = "jdbc:postgresql://localhost:5432/shop";
-    String login = "postgres";
-    String password = "postgres";
-    connection = DriverManager.getConnection(url, login, password);
+  private void setConnection() throws SQLException {
+    try {
+      Class.forName("org.postgresql.Driver");
+      String url = "jdbc:postgresql://localhost:5432/shop";
+      String login = "postgres";
+      String password = "postgres";
+      connection = DriverManager.getConnection(url, login, password);
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new SQLException("could not connect to server");
+    }
   }
 
   private void setStatement() throws SQLException {
@@ -28,7 +31,7 @@ public class SearchDaoHelper implements SearchDao, Closeable {
   }
 
   @Override
-  public String getCustomerByLastNameInJson(String lastName) throws SQLException {//todo: add checks
+  public String getCustomerByLastNameInJson(String lastName) throws SQLException {
     String query = "select array_to_json(array_agg(row_to_json(t))) from (select distinct c.last_name as \"lastName\" , " +
             "c.first_name  as \"firstName\"from \"Customer\" c\n" +
             "\tjoin \"Sale\" s on \n" +
@@ -41,7 +44,7 @@ public class SearchDaoHelper implements SearchDao, Closeable {
   }
 
   @Override
-  public String getCustomersByPurchaseInJson(String productName, int minTimes) throws SQLException {//todo: add checks
+  public String getCustomersByPurchaseInJson(String productName, int minTimes) throws SQLException {
     String query = "select array_to_json(array_agg(row_to_json(t))) from (select last_name as \"lastName\", first_name as \"firstName\"from (select c.first_name, c.last_name, p.product_name,\n" +
             "sum(sd.quantity) as OverallQuantity from \n" +
             "\"Customer\" c join \"Sale\" s on \n" +
@@ -59,7 +62,7 @@ public class SearchDaoHelper implements SearchDao, Closeable {
   }
 
   @Override
-  public String getCustomersByPurchaseVolumeInJson(double minPurchaseVolume, double maxPurchaseVolume) throws SQLException {//todo: add checks
+  public String getCustomersByPurchaseVolumeInJson(double minPurchaseVolume, double maxPurchaseVolume) throws SQLException {
     String query = "select array_to_json(array_agg(row_to_json(t))) from " +
             "(select last_name as \"lastName\", first_name as \"firstName\" from " +
             "(select c.first_name, c.last_name, \n" +
@@ -79,7 +82,7 @@ public class SearchDaoHelper implements SearchDao, Closeable {
   }
 
   @Override
-  public String getPassiveCustomersInJson(int count) throws SQLException {//todo: add checks
+  public String getPassiveCustomersInJson(int count) throws SQLException {
     String query = "select array_to_json(array_agg(row_to_json(t))) from (select last_name as \"lastName\", first_name as \"firstName\" from (select c.first_name, c.last_name,\n" +
             "SUM(sd.quantity) as OverallQuantity from \n" +
             "\"Customer\" c join \"Sale\" s on \n" +
@@ -94,14 +97,5 @@ public class SearchDaoHelper implements SearchDao, Closeable {
     ResultSet rs = curStatement.executeQuery(query);
     rs.next();
     return rs.getString(1);
-  }
-
-  @Override
-  public void close() {
-    try {
-      curStatement.close();
-      connection.close();
-    } catch (SQLException ignore) {
-    }
   }
 }

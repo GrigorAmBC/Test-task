@@ -2,33 +2,28 @@ package ru.nsu.fit.grigor.database_project.adapter.operation.utility.dao;
 
 import ru.nsu.fit.grigor.database_project.model.port.dao.StatsDao;
 
-import java.io.Closeable;
 import java.sql.*;
 
-public class StatsDaoHelper implements StatsDao, Closeable {
+public class StatsDaoHelper implements StatsDao {
 
   private Connection connection;
   private Statement curStatement;
-  private String url = "jdbc:postgresql://localhost:5432/shop";
-  private String login = "postgres";
-  private String password = "postgres";
 
-  public StatsDaoHelper(String url, String login, String password) throws SQLException, ClassNotFoundException {
-    this.login = login;
-    this.password = password;
-    this.url = url;
-    setConnection();
-  }
-
-  public StatsDaoHelper() throws SQLException, ClassNotFoundException {
+  public StatsDaoHelper() throws SQLException {
     setConnection();
     setStatement();
   }
 
-
-  public void setConnection() throws ClassNotFoundException, SQLException {
-    Class.forName("org.postgresql.Driver");
-    connection = DriverManager.getConnection(url, login, password);
+  public void setConnection() throws SQLException {
+    try {
+      Class.forName("org.postgresql.Driver");
+      String url = "jdbc:postgresql://localhost:5432/shop";
+      String login = "postgres";
+      String password = "postgres";
+      connection = DriverManager.getConnection(url, login, password);
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new SQLException("could not connect to server");
+    }
   }
 
   private void setStatement() throws SQLException {
@@ -72,14 +67,5 @@ public class StatsDaoHelper implements StatsDao, Closeable {
     ResultSet rs = curStatement.executeQuery(query);
     rs.next();
     return rs.getString(1);
-  }
-
-  @Override
-  public void close() {
-    try {
-      curStatement.close();
-      connection.close();
-    } catch (SQLException ignore) {
-    }
   }
 }
